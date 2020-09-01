@@ -38,8 +38,41 @@ class Header
 	end
 
 	## pushes each patient into a redis list called "patients"
-	def commit
-		self.patients.map{|patient| $redis.lpush("patients",patient.to_json)}
+	def commit(args)
+		puts "args are:"
+		puts args.to_s
+		if args[:output_options]["format"] == LabInterface::REDIS
+		
+			self.patients.map{|patient| $redis.lpush("patients",patient.to_json)}
+
+		elsif args[:output_options]["format"] == LabInterface::CSV
+			
+			args[:output_options]["records_per_file"] ||= "single"
+
+			if args[:output_options]["records_per_file"] ==  "single"
+
+				self.patients.each do |patient|
+					csv_file_name = Time.now.strftime('%d %B %Y %I:%M:%S %P').to_s + "#{patient.patient_id}.csv"
+					csv_file_path = args[:output_options]["output_directory"] + "/" + csv_file_name
+					
+					patient_csv_data = patient.to_csv
+
+					patient_csv_data[:column_names].unshift("Time")
+					patient_csv_data[:column_values].unshift(Time.now.strftime('%d %B %Y %I:%M:%S %P'))
+
+					patient_csv_data[:column_names].unshift("Machine Id")
+					patient_csv_data[:column_values].unshift(self.machine_name)
+					
+					IO.write(csv_file_path,(patient_csv_data[:column_names].join(",") + "\n" + patient_csv_data[:column_values].join(",")))
+					
+				end
+				
+			end 
+
+		else
+			puts "no known output format has been provided! PLEASE PROVIDE AN OUTPUT FORMAT"
+		end
+
 		puts JSON.pretty_generate(JSON.parse(self.to_json))
 	end
 
@@ -54,9 +87,9 @@ class Header
 	## depends on the machine code.
 	## if we have that or not.
 	def build_one_response(options)
-		puts "building one response=========="
-		puts "queries are:"
-		puts self.queries.size.to_s
+		#puts "building one response=========="
+		#puts "queries are:"
+		#puts self.queries.size.to_s
 		responses = []
 		self.queries.each do |query|
 			puts "doing query"

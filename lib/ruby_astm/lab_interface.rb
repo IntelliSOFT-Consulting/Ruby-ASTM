@@ -14,6 +14,12 @@ module LabInterface
   ETX = "\x03"
   EOT = "\x04"
 
+  ## rdbms is not currently implemented
+  ## redis is the default output format
+  ## csv is implemented.
+  REDIS = "redis"
+  CSV = "csv"
+  OUTPUT_FORMATS = [REDIS,CSV]
   
 
   attr_accessor :ethernet_connections
@@ -45,6 +51,18 @@ module LabInterface
 
   ## class to use for Query
   attr_accessor :query_class
+
+  ## output format
+  attr_accessor :output_options
+
+  ## use mappings : whether to transpose the fields to the lis codes.
+  attr_accessor :use_mappings
+
+  ## whether to log all the output
+  attr_accessor :log
+
+  ## where to log the output
+  attr_accessor :log_output_directory
 
   $ENQ = "[5]"
   $start_text = "[2]"
@@ -82,6 +100,15 @@ module LabInterface
       File.dirname __dir__
   end
 
+  def process_bytes(bytes)
+    bytes = bytes.flatten
+    text = pre_process_bytes(bytes,"")
+    text.each_line do |line|
+      line.split('\\r').each do |txt| 
+        process_text(txt)
+      end
+    end
+  end
 
   def process_byte_file(full_file_path)
     bytes = eval(IO.read(full_file_path))
@@ -216,21 +243,19 @@ module LabInterface
 
       concat
 
-
-
   end
 
-  def write_bytes_to_file(bytes)
-
+  def append_to_log(line)
+    puts "self log is #{self.log}, and log output #{self.log_output_directory}"
+    unless self.log.blank?
+      puts "writing log"
+      File.open((self.log_output_directory + "/log.txt"), "a+") { |f| f.write "#{line} \n" }
+    end
   end
 
-  
 
 	def receive_data(data)
-      
-
     begin
-
 
       self.data_buffer ||= ''
 
@@ -238,7 +263,6 @@ module LabInterface
 
       concat = ""
       
-   
       byte_arr = data.bytes.to_a
       
       self.test_data_bytes ||= []
@@ -249,13 +273,23 @@ module LabInterface
 
       self.data_bytes.push(byte_arr)
 
-    
+      ## we can log at this level.
+
       concat = pre_process_bytes(byte_arr,concat)
  
-      #puts "concat is:"
+      puts "concat is:"
       
       #puts concat.to_s
-      
+      #puts "log is--->"
+      #puts self.log
+      #puts "log output directory -->"
+      #puts self.log_output_directory
+      #puts "output options --------->"
+      #puts self.output_options.to_s
+      append_to_log(concat)
+      # do we open and write here itself ?
+      # or what ?
+      # we can just keep io append to the log file here.
       self.data_buffer << concat
 
       ## if the last byte is EOT, then call process text.
@@ -331,7 +365,7 @@ module LabInterface
           process_text(self.data_buffer)
           self.data_buffer = ''
           if self.headers.size > 0
-            self.headers[-1].commit
+            self.headers[-1].commit(:output_options => self.output_options)
             send_data(self.headers[-1].generate_ack_success_response)
           end
         else
@@ -356,8 +390,8 @@ module LabInterface
   end
 
   def process_text(text)
-      puts "text is:"
-      puts text
+      #puts "text is:"
+      #puts text
       text.split("\n").each do |l|
         #puts "doing line:#{l}" 
 		    line = Line.new({:text => l})
@@ -417,7 +451,7 @@ module LabInterface
       when "Result"
         #puts "GOT RESULT------------------>"
         #puts "line is :#{line}"
-        result = Result.new({:line => line})
+        result = Result.new({:line => line, :use_mappings => self.use_mappings})
         #puts "made new result"
         unless self.headers.blank?
           unless self.headers[-1].patients.blank?
@@ -430,7 +464,8 @@ module LabInterface
         ## it didn't terminate so there was no commit being called.
         unless self.headers.blank?
           #puts "got terminator."
-          self.headers[-1].commit
+          ## here add the header information , time , etc.
+          self.headers[-1].commit(:output_options => self.output_options)
         end
       end
   end

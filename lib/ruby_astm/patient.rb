@@ -32,6 +32,36 @@ class Patient
 		end
 	end
 
+	## so for this we need the columns.
+	## first proof of concept.
+	def to_csv(args={})
+		csv_lines = []
+
+		column_names = []
+		column_values = []
+		sample_id = nil
+
+		self.orders.each do |order|
+			sample_id = order.id
+			column_names = order.results.keys
+			column_values = order.results.values.map{|c| c.value}
+		end
+		
+		column_names.unshift("Patient Id")
+		
+		column_values.unshift(self.patient_id)
+
+		column_names.unshift("Sample Id")
+		
+		column_values.unshift(sample_id)
+
+		{
+			:column_names => column_names,
+			:column_values => column_values
+		}
+
+	end
+
 	def to_json
         hash = {}
         self.instance_variables.each do |x|

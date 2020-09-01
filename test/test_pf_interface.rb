@@ -2,25 +2,26 @@ require 'minitest/autorun'
 require 'ruby_astm'
 
 ## BEFORE RUNNING THESE TESTS,
-## YOU NEED TO HAVE THE PATHOFAST SERVER
-## AND run the rake task: pathofast:prepare_ruby_astm_env (from the pathofast/local root folder)
+## YOU NEED TO HAVE THE pf SERVER
+## AND run the rake task: pf:prepare_ruby_astm_env (from the pf/local root folder)
 ## then you can run the tests below
-## make sure you copy the lis security key of the pathofast organization.
+## make sure you copy the lis security key of the pf organization.
 ## this will be the last line printed by the rake task 
 class TestPfInterface < Minitest::Test
 	
-	HOST = "https://www.pathofast.com/"
-	LIS_SECURITY_KEY="pathofast"
-	ORGANIZATION_ID="5e32676b58aff600042678dd-Pathofast"
-	PRIVATE_KEY_FILE="/home/root1/Desktop/Github/lab_server/private_key.json"
+	HOST = ENV["PF_HOST"]
+	LIS_SECURITY_KEY=ENV["LIS_SECURITY_KEY"]
+	ORGANIZATION_ID=ENV["ORGANIZATION_ID"]
+	PRIVATE_KEY_FILE_PATH=ENV["PRIVATE_KEY_FILE_PATH"]
+
 	#############################################
 	##
 	##
 	## THESE TESTS ARE MEANT TO BE RUN IN CONJUCTION
 	## WITH A SERVER
 	## FIRST PREPARE THE SERVER BY RUNNING
-	## rake pathofast:lis_setup in the Pathofast local folder
-	## Then make sure the pathofast server is running at localhost:3000
+	## rake pf:lis_setup in the pf local folder
+	## Then make sure the pf server is running at localhost:3000
 	## Then run all these tests.
 	##
 	##
@@ -41,7 +42,7 @@ class TestPfInterface < Minitest::Test
 		$redis.del("last_request")
 		$redis = Redis.new
 		$redis.del("ruby_astm_log")
-		k = Pf_Lab_Interface.new(nil,LIS_SECURITY_KEY,HOST,ORGANIZATION_ID,JSON.parse(IO.read("/home/bhargav/Downloads/ml-micro-analysis-b2eeef4f2d47.json")))
+		k = Pf_Lab_Interface.new(nil,LIS_SECURITY_KEY,HOST,ORGANIZATION_ID,JSON.parse(IO.read(PRIVATE_KEY_FILE_PATH)))
 		t = Time.now.to_i.to_s
 		puts "current time is: #{t}"
 		k.test_trigger_lis_poll(t)
@@ -68,7 +69,7 @@ class TestPfInterface < Minitest::Test
 		$redis.del("last_request")
 		$redis = Redis.new
 		$redis.del("ruby_astm_log")
-		k = Pf_Lab_Interface.new(nil,"dog",HOST,ORGANIZATION_ID,JSON.parse(IO.read("/home/bhargav/Downloads/ml-micro-analysis-firebase-adminsdk-3t7e3-be32178718.json")))
+		k = Pf_Lab_Interface.new(nil,"dog",HOST,ORGANIZATION_ID,JSON.parse(IO.read()))
 		t = Time.now.to_i.to_s
 		k.test_trigger_lis_poll(t)
 		data = k.connection.get("organizations/#{ORGANIZATION_ID}")
@@ -90,7 +91,7 @@ class TestPfInterface < Minitest::Test
 		$redis.del("last_request")
 		$redis = Redis.new
 		$redis.del("ruby_astm_log")
-		k = Pf_Lab_Interface.new(nil,LIS_SECURITY_KEY,HOST,ORGANIZATION_ID,JSON.parse(IO.read("/home/bhargav/Downloads/ml-micro-analysis-firebase-adminsdk-3t7e3-be32178718.json")))
+		k = Pf_Lab_Interface.new(nil,LIS_SECURITY_KEY,HOST,ORGANIZATION_ID,JSON.parse(IO.read(PRIVATE_KEY_FILE_PATH)))
 		t = Time.now.to_i.to_s
 		
 		k.test_trigger_lis_poll(t)
@@ -136,7 +137,7 @@ class TestPfInterface < Minitest::Test
 		$redis = Redis.new
 		$redis.del("ruby_astm_log")
 
-		k = Pf_Lab_Interface.new(nil,LIS_SECURITY_KEY,HOST,ORGANIZATION_ID,JSON.parse(IO.read("/home/bhargav/Downloads/ml-micro-analysis-firebase-adminsdk-3t7e3-be32178718.json")))
+		k = Pf_Lab_Interface.new(nil,LIS_SECURITY_KEY,HOST,ORGANIZATION_ID,JSON.parse(IO.read(PRIVATE_KEY_FILE_PATH)))
 		t = Time.now.to_i.to_s
 
 		k.test_trigger_lis_poll(t)
@@ -181,7 +182,7 @@ class TestPfInterface < Minitest::Test
 		$redis.del("ruby_astm_log")
 		$redis.del("failed_updates")
 
-		k = Pf_Lab_Interface.new(nil,LIS_SECURITY_KEY,HOST,ORGANIZATION_ID,JSON.parse(IO.read("/home/bhargav/Downloads/ml-micro-analysis-firebase-adminsdk-3t7e3-be32178718.json")))
+		k = Pf_Lab_Interface.new(nil,LIS_SECURITY_KEY,HOST,ORGANIZATION_ID,JSON.parse(IO.read(PRIVATE_KEY_FILE_PATH)))
 		t = Time.now.to_i.to_s
 
 		k.test_trigger_lis_poll(t)

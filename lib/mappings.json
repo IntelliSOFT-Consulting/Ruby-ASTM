@@ -14,12 +14,29 @@
 		"REPORT_NAME" : "Hemogram",
         "TYPE" : "HEMAT"
 	},
+	"WBC-BF" : 
+	{
+		"LIS_CODE" : "BF_TLCparam",
+		"TUBE" : "EDTA",
+		"TRANSFORM" : "(self.value.to_f*1000).to_i.to_s",
+		"REPORT_NAME" : "Varied",
+        "TYPE" : "Fluids",
+        "alternate_lis_codes" : ["ASCITIC_FLUID_TLCparam","PLEURAL_FLUID_TLCparam","SYNOVIAL_FLUID_TLCparam","CSF_TLCparam"]
+	},
 	"RBC" : 
 	{
 		"LIS_CODE" : "RBCparam",
 		"TUBE" : "EDTA",
 		"REPORT_NAME" : "Hemogram",
         "TYPE" : "HEMAT"
+	},
+	"RBC-BF" : 
+	{
+		"LIS_CODE" : "BF_RBCparam",
+		"TUBE" : "EDTA",
+		"REPORT_NAME" : "Varied",
+        "TYPE" : "Fluids",
+        "alternate_lis_codes" : ["ASCITIC_FLUID_RBCparam","PLEURAL_FLUID_RBCparam","SYNOVIAL_FLUID_RBCparam","CSF_RBCparam"]
 	},
 	"HGB" : 
 	{
@@ -72,6 +89,13 @@
 		"REPORT_NAME" : "Hemogram",
         "TYPE" : "HEMAT"
 	},
+	"PMN%" : { 
+		"LIS_CODE" : "BF_PMNparam",
+		"TUBE" : "EDTA",
+		"REPORT_NAME" : "fluid",
+		"TYPE" : "fluid",
+		"alternate_lis_codes" : ["ASCITIC_FLUID_PMNparam","PLEURAL_FLUID_PMNparam","SYNOVIAL_FLUID_PMNparam","CSF_PMNparam"]
+	},
 	"LYMPH%": {
 		"LIS_CODE" : "Lparam",
 		"TUBE" : "EDTA",
@@ -83,6 +107,13 @@
 		"TUBE" : "EDTA",
 		"REPORT_NAME" : "Hemogram",
         "TYPE" : "HEMAT"
+	},
+	"MN%" : {
+		"LIS_CODE" : "BF_MNparam",
+		"TUBE" : "EDTA",
+		"REPORT_NAME" : "fluid",
+		"TYPE" : "fluid",
+		"alternate_lis_codes" : ["ASCITIC_FLUID_MNparam","PLEURAL_FLUID_MNparam","SYNOVIAL_FLUID_MNparam","CSF_MNparam"]
 	},
 	"EO%": {
 		"LIS_CODE" : "Eparam",
@@ -102,6 +133,13 @@
 		"REPORT_NAME" : "Hemogram",
         "TYPE" : "HEMAT"
 	},
+	"PMN#": {
+		"LIS_CODE" : "BF_ANCparam",
+		"TUBE" : "EDTA",
+		"REPORT_NAME" : "Hemogram",
+        "TYPE" : "HEMAT",
+        "alternate_lis_codes" : ["ASCITIC_FLUID_ANCparam","PLEURAL_FLUID_ANCparam","SYNOVIAL_FLUID_ANCparam","CSF_ANCparam"]
+	},
 	"LYMPH#": {
 		"LIS_CODE" : "ALCparam",
 		"TUBE" : "EDTA",
@@ -113,6 +151,13 @@
 		"TUBE" : "EDTA",
 		"REPORT_NAME" : "Hemogram",
         "TYPE" : "HEMAT"
+	},
+	"MN#": {
+		"LIS_CODE" : "BF_AMCparam",
+		"TUBE" : "EDTA",
+		"REPORT_NAME" : "Hemogram",
+        "TYPE" : "HEMAT",
+        "alternate_lis_codes" : ["ASCITIC_FLUID_AMCparam","PLEURAL_FLUID_AMCparam","SYNOVIAL_FLUID_AMCparam","CSF_AMCparam"]
 	},
 	"EO#": {
 		"LIS_CODE" : "AECparam",
@@ -408,7 +453,7 @@
 		"REPORT_NAME" : "Serum Ferretin",
         "TYPE" : "IMMUNO"
 	},
-	"8" : {
+	"18" : {
 		"LIS_CODE" : "TSH",
 		"TUBE" : "SERUM",
 		"REPORT_NAME" : "TSH",

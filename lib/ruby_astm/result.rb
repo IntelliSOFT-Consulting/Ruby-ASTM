@@ -22,7 +22,7 @@ class Result
 				puts line.fields[2]
 				line.fields[2].scan(/^\^+(?<name>[A-Za-z0-9\%\#\-\_\?\/]+)\^?(?<dilution>\d+)?/) { |name,dilution|  
 					
-					self.name = lookup_mapping(name)
+					self.name = lookup_mapping(name,args)
 
 					## other names.
 					
@@ -34,7 +34,7 @@ class Result
 			unless self.name.blank?
 				self.name.scan(/(?<test_name>\d+)\/(?<dilution>\d+)\/(?<pre_dilution>[a-zA-Z0-9]+)/) { |test_name,dilution,pre_dilution|
 
-					self.name = lookup_mapping(test_name)
+					self.name = lookup_mapping(test_name,args)
 
 					self.report_name = lookup_report_name(test_name)
 
@@ -56,6 +56,7 @@ class Result
 					self.value = value
 				}
 			end
+			
 			unless line.fields[2].blank?
 				puts "line fields 2 is:"
 				puts line.fields[2]
@@ -166,7 +167,8 @@ class Result
 	end
 
 	## @return[String] the name defined in the mappings.json file, or the name that wqs passed in.
-	def lookup_mapping(name)
+	def lookup_mapping(name,args)
+		return name unless args[:use_mappings]
 		unless $mappings[name].blank?
 			unless self.machine_name.blank?
 				unless $mappings[name]["MACHINE_SPECIFIC_LIS_CODES"].blank?
