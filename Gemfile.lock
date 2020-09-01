@@ -1,9 +1,8 @@
 PATH
   remote: .
   specs:
-    ruby_astm (1.5.5)
+    ruby_astm (1.5.7)
       activesupport
-      em-rubyserial
       eventmachine
       google-api-client
       json
@@ -14,6 +13,7 @@ PATH
       retriable (~> 3.1)
       rufus-scheduler
       typhoeus
+      wj-em-rubyserial
 
 GEM
   remote: http://www.rubygems.org/
@@ -28,9 +28,6 @@ GEM
     concurrent-ruby (1.1.7)
     declarative (0.0.20)
     declarative-option (0.1.0)
-    em-rubyserial (0.0.2)
-      eventmachine
-      rubyserial
     et-orbi (1.2.4)
       tzinfo
     ethon (0.12.0)
@@ -106,6 +103,9 @@ GEM
     tzinfo (1.2.7)
       thread_safe (~> 0.1)
     uber (0.1.0)
+    wj-em-rubyserial (0.0.4)
+      eventmachine
+      rubyserial
 
 PLATFORMS
   ruby
