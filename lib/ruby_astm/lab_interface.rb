@@ -406,6 +406,7 @@ module LabInterface
 
   def process_type(line)
       case line.type
+=begin
       when "Hl7_Header"
         hl7_header = Hl7Header.new({:line => line})
         self.headers ||= []
@@ -427,6 +428,7 @@ module LabInterface
           hl7_order = Hl7Order.new({:line => line, :patient_id => self.headers[-1].patients[-1].patient_id, :machine_name => self.headers[-1].machine_name})
           self.headers[-1].patients[-1].orders << hl7_order
         end
+=end
       when "Header"
         #puts "got header"
         header = Header.new({:line => line})

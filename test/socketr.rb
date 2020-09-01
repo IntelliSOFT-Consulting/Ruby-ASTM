@@ -1,5 +1,5 @@
-require 'socket'
-
+#require 'socket'
+=begin
 host = '127.0.0.1'
 port = 3000
 s = TCPSocket.new(host, port)
@@ -8,3 +8,4 @@ a.each do |barr|
 	s.write barr.pack('c*')
 end
 s.close
+=end

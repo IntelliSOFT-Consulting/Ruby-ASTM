@@ -9,11 +9,6 @@ class AstmServer
 
 	include LabInterface
 
-	## DEFAULT SERIAL PORT : /dev/ttyS0
-	## DEFAULT USB PORT : /dev/ttyUSB0
-	## @param[Array] ethernet_connections : each element is expected to be a hash, with keys for :server_ip, :server_port.
-	## @param[Array] serial_connections : each element is expected to be a hash with port_address, baud_rate, and parity
-	#def initialize(server_ip=nil,server_port=nil,mpg=nil,respond_to_queries=false,serial_port='/dev/ttyS0',usb_port='/dev/ttyUSB0',serial_baud=9600,serial_parity=8,usb_baud=19200,usb_parity=8)
 	def initialize(ethernet_connections,serial_connections,mpg=nil,respond_to_queries=nil,options=nil)
 		$redis = Redis.new
 		self.class.log("Initializing AstmServer")
@@ -78,13 +73,6 @@ class AstmServer
 				raise "please provide a valid ethernet configuration with port" unless econn[:server_port]
 				EventMachine::start_server econn[:server_ip], econn[:server_port], LabInterface
 				self.class.log("Running ETHERNET  with configuration #{econn}")
-			end
-			self.serial_connections.each do |sconn|
-				raise "please provide a valid serial configuration with port address" unless sconn[:port_address]
-				raise "please provide a valid serial configuration with baud rate" unless sconn[:baud_rate]
-				raise "please provide a valid serial configuration with parity" unless sconn[:parity]
-				EventMachine.open_serial(sconn[:port_address], sconn[:baud_rate], sconn[:parity],LabInterface)
-				puts "RUNNING SERIAL port with configuration : #{sconn}"
 			end
 
 		}
