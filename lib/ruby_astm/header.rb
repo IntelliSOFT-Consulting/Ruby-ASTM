@@ -37,10 +37,10 @@ class Header
 		end
 	end
 
-	## pushes each patient into a redis list called "patients"
+	
 	def commit(args)
-		puts "args are:"
-		puts args.to_s
+		#puts "args are:"
+		#puts args.to_s
 		if args[:output_options]["format"] == LabInterface::REDIS
 		
 			self.patients.map{|patient| $redis.lpush("patients",patient.to_json)}
@@ -70,10 +70,10 @@ class Header
 			end 
 
 		else
-			puts "no known output format has been provided! PLEASE PROVIDE AN OUTPUT FORMAT"
+			#puts "no known output format has been provided! PLEASE PROVIDE AN OUTPUT FORMAT"
 		end
 
-		puts JSON.pretty_generate(JSON.parse(self.to_json))
+		#puts JSON.pretty_generate(JSON.parse(self.to_json))
 	end
 
 	def get_header_response(options)
@@ -87,17 +87,17 @@ class Header
 	## depends on the machine code.
 	## if we have that or not.
 	def build_one_response(options)
-		#puts "building one response=========="
-		#puts "queries are:"
-		#puts self.queries.size.to_s
+		##puts "building one response=========="
+		##puts "queries are:"
+		##puts self.queries.size.to_s
 		responses = []
 		self.queries.each do |query|
-			puts "doing query"
-			puts query.sample_ids
+			#puts "doing query"
+			#puts query.sample_ids
 			header_response = get_header_response(options)
 			query.build_response(options).each do |qresponse|
-				puts "qresponse is:"
-				puts qresponse
+				#puts "qresponse is:"
+				#puts qresponse
 				header_response += qresponse
 			end
 			responses << header_response

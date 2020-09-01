@@ -22,18 +22,7 @@ class TestRubyAstm < Minitest::Test
 =end
   
   ## so we need a log file, and a hack to stop this from getting other stuff.
-  def test_csv_output
-    ethernet_connections = [{:server_ip => "127.0.0.1", :server_port => 3000}]
-    server = AstmServer.new(ethernet_connections,[],nil,nil,{:use_mappings => false, :log => true, :log_output_directory => "/home/bhargav/Desktop", :output_options => {"format" => LabInterface::CSV, "records_per_file" => "single", "output_directory" => "/home/bhargav/Desktop"}})
-    server.start_server
-    #assert_equal 1, $redis.llen("patients")
-    #patient = JSON.parse($redis.lrange("patients",0,0)[0])
-    #assert_equal "pragya", patient["@orders"][0]["id"]
-    #assert_equal "0.325", patient["@orders"][0]["results"]["HIV"]["value"]
-    #assert_equal "0.318", patient["@orders"][0]["results"]["HBS"]["value"]
-  end
-
-=begin
+  
   def test_csv_output
     ethernet_connections = [{:server_ip => "127.0.0.1", :server_port => 3000}]
     server = AstmServer.new(ethernet_connections,[],nil,nil,{:use_mappings => false, :log => true, :log_output_directory => "/home/bhargav/Desktop", :output_options => {"format" => LabInterface::CSV, "records_per_file" => "single", "output_directory" => "/home/bhargav/Desktop"}})
@@ -49,7 +38,7 @@ class TestRubyAstm < Minitest::Test
     #assert_equal "0.325", patient["@orders"][0]["results"]["HIV"]["value"]
     #assert_equal "0.318", patient["@orders"][0]["results"]["HBS"]["value"]
   end
-=end
+
 =begin
   def test_stago
     ethernet_connections = [{:server_ip => "127.0.0.1", :server_port => 3000}]

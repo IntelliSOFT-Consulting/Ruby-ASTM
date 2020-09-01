@@ -1,18 +1,24 @@
 require "active_support/all"
-
 module LabInterface
 
   def self.included base
     base.extend ClassMethods
   end
 
-	ACK = "\x06"
+  ACK = "\x06"
   ENQ = "\x05"
   STX = "\x02"
   LF = "\x10"
   CR = "\x13"
   ETX = "\x03"
   EOT = "\x04"
+
+
+  $ENQ = "[5]"
+  $start_text = "[2]"
+  $end_text = "[3]"
+  $record_end = "[13]"
+  $frame_end = "[10]"
 
   ## rdbms is not currently implemented
   ## redis is the default output format
@@ -21,6 +27,7 @@ module LabInterface
   CSV = "csv"
   OUTPUT_FORMATS = [REDIS,CSV]
   
+
 
   attr_accessor :ethernet_connections
   attr_accessor :serial_connections
@@ -53,24 +60,19 @@ module LabInterface
   attr_accessor :query_class
 
   ## output format
-  attr_accessor :output_options
+  mattr_accessor :output_options
 
   ## use mappings : whether to transpose the fields to the lis codes.
-  attr_accessor :use_mappings
+  mattr_accessor :use_mappings
 
   ## whether to log all the output
-  attr_accessor :log
+  mattr_accessor :log
 
   ## where to log the output
-  attr_accessor :log_output_directory
+  mattr_accessor :log_output_directory
 
-  $ENQ = "[5]"
-  $start_text = "[2]"
-  $end_text = "[3]"
-  $record_end = "[13]"
-  $frame_end = "[10]"
+  
 
-    
   #######################################################
   ##
   ##
@@ -80,6 +82,7 @@ module LabInterface
   ##
   ##
   #######################################################
+
   module ClassMethods
     def log(message)
       puts message
@@ -198,7 +201,7 @@ module LabInterface
 
   def pre_process_bytes(byte_arr,concat)
 
-      puts byte_arr.to_s
+      #puts byte_arr.to_s
       indices_to_delete = is_mid_frame_end?(byte_arr)
       #puts "indices to delete"
       #puts indices_to_delete.to_s
@@ -253,9 +256,11 @@ module LabInterface
     end
   end
 
+ 
 
 	def receive_data(data)
-    begin
+
+    #begin
 
       self.data_buffer ||= ''
 
@@ -277,7 +282,7 @@ module LabInterface
 
       concat = pre_process_bytes(byte_arr,concat)
  
-      puts "concat is:"
+      #puts "concat is:"
       
       #puts concat.to_s
       #puts "log is--->"
@@ -302,7 +307,7 @@ module LabInterface
       #end
 
       if data.bytes.to_a[-1] == 4
-        puts "GOT EOT --- PROCESSING BUFFER, AND CLEARING."
+        #puts "GOT EOT --- PROCESSING BUFFER, AND CLEARING."
         process_text(self.data_buffer)
         root_path = File.dirname __dir__
         #puts "root path #{root_path}"
@@ -318,11 +323,11 @@ module LabInterface
             send_data(ENQ)
           end
         else
-          puts "sending catch all --------------- ACK --------------"
+          #puts "sending catch all --------------- ACK --------------"
           send_data(ACK)
         end
       elsif data.bytes.to_a[0] == 6
-        puts "GOT ACK --- GENERATING RESPONSE"
+       # puts "GOT ACK --- GENERATING RESPONSE"
         unless self.headers.blank?
           header_responses = self.headers[-1].build_one_response({machine_name: self.headers[-1].machine_name})
           ## if no queries then, we have to send ack.
@@ -351,7 +356,7 @@ module LabInterface
           #puts "NO HEADERS PRESENT --- "
         end
       elsif data.bytes.to_a[0] == 255
-        puts  " ----------- got 255 data -----------, not sending anything back. "
+        #puts  " ----------- got 255 data -----------, not sending anything back. "
       else
         #unless self.data_buffer.blank?
         #  puts self.data_buffer.gsub(/\r/,'\n').to_s
@@ -374,12 +379,12 @@ module LabInterface
         end
       end
 
-    rescue => e
+    #rescue => e
       
       #self.headers = []
-      AstmServer.log("data was: " + self.data_buffer + "error is:" + e.backtrace.to_s)
+      #AstmServer.log("data was: " + self.data_buffer + "error is:" + e.backtrace.to_s)
       #send_data(EOT)
-    end
+    #end
 
   end
 
@@ -428,9 +433,9 @@ module LabInterface
         self.headers ||= []
         self.headers << header
       when "Query"
-        puts "got query, what is the query class: #{self.query_class}"
+        #puts "got query, what is the query class: #{self.query_class}"
         self.query_class ||= "Query"
-        puts "the query class is: #{self.query_class}"
+        #puts "the query class is: #{self.query_class}"
         query = self.query_class.constantize.new({:line => line})
         unless self.headers.blank?
           self.headers[-1].queries << query
@@ -470,14 +475,11 @@ module LabInterface
       end
   end
 
-=begin
-1.STX + response + LF + ETX
-2.response
-3.STX + response + "L|1|N\r" + ETX 
-4.response + "L|1|N\r" 
-=end
+
   def unbind
      puts "-- someone disconnected from the echo server!"
   end
+
+
 
 end

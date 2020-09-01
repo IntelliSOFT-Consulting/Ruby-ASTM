@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'ruby_astm'
-  s.version     = '1.5.5'
+  s.version     = '1.5.7'
   s.date        = '2018-11-20'
   s.summary     = "A Ruby gem to interface with Medical instruments that work on the ASTM protocol and HL7 protocol. Offers limited bidirectionality for ASTM. Bidirectionality is currently not supported for HL7"
   s.description = "This gem provides a server that can handle communication from medical instruments that send/receive information on the ASTM protocol."
@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.license       = 'MIT'
   s.add_dependency 'eventmachine'
   s.add_dependency 'em-rubyserial'
-  s.add_dependency 'activesupport','5.2.2'
+  s.add_dependency 'activesupport'
   s.add_dependency 'json'
   s.add_dependency 'redis'
   s.add_dependency 'typhoeus'

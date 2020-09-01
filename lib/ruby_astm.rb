@@ -1,8 +1,10 @@
+require 'rubygems'
 require_relative "ruby_astm/usb_module"
 require_relative "ruby_astm/custom/esr"
 require_relative "ruby_astm/query"
 require_relative "ruby_astm/frame"
 require_relative "ruby_astm/header"
+require_relative "ruby_astm/test_interface"
 require_relative "ruby_astm/lab_interface"
 require_relative "ruby_astm/line"
 require_relative "ruby_astm/order"
@@ -30,4 +32,3 @@ require_relative "ruby_astm/custom/pf_module"
 require_relative "ruby_astm/custom/pf_server"
 require_relative "ruby_astm/custom/neph_module"
 require_relative "ruby_astm/custom/neph_server"
-

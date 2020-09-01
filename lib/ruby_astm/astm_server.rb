@@ -5,7 +5,6 @@ require "active_support/all"
 require "json"
 require "redis"
 require "rest-firebase"
-
 class AstmServer
 
 	include LabInterface
@@ -34,8 +33,8 @@ class AstmServer
 	end
 
 	def parse_options(options)
-		puts "options are:"
-		puts options.to_s
+		#puts "options are:"
+		#puts options.to_s
 		self.query_class = options[:query_class] unless options[:query_class].blank?
 			
 		## the default output format.
@@ -58,7 +57,7 @@ class AstmServer
 		else
 			self.use_mappings = options[:use_mappings]
 		end
-			
+
 		if options[:log].nil?
 			self.log = false
 		else
@@ -66,9 +65,9 @@ class AstmServer
 			self.log_output_directory = options[:log_output_directory]
 		end
 
-		puts "log becomes:"
-		puts self.log.to_s
-		puts self.log_output_directory.to_s
+		#puts "log becomes:"
+		#puts self.log.to_s
+		#puts self.log_output_directory.to_s
 
 	end
 
@@ -77,7 +76,7 @@ class AstmServer
 			self.ethernet_connections.each do |econn|
 				raise "please provide a valid ethernet configuration with ip address" unless econn[:server_ip]
 				raise "please provide a valid ethernet configuration with port" unless econn[:server_port]
-				EventMachine::start_server econn[:server_ip], econn[:server_port], LabInterface	
+				EventMachine::start_server econn[:server_ip], econn[:server_port], LabInterface
 				self.class.log("Running ETHERNET  with configuration #{econn}")
 			end
 			self.serial_connections.each do |sconn|

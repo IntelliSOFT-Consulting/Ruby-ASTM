@@ -14,12 +14,12 @@ class Result
 	attr_accessor :machine_name
 
 	def set_name(args)
-		puts "came to set name"
+		#puts "came to set name"
 		if line = args[:line]
-			puts "line fields is: #{line.fields}"
+			#puts "line fields is: #{line.fields}"
 			unless line.fields[2].blank?
-				puts "line fields 2 is:"
-				puts line.fields[2]
+				#puts "line fields 2 is:"
+				#puts line.fields[2]
 				line.fields[2].scan(/^\^+(?<name>[A-Za-z0-9\%\#\-\_\?\/]+)\^?(?<dilution>\d+)?/) { |name,dilution|  
 					
 					self.name = lookup_mapping(name,args)
@@ -58,9 +58,9 @@ class Result
 			end
 			
 			unless line.fields[2].blank?
-				puts "line fields 2 is:"
-				puts line.fields[2]
-				puts "----------------------------"
+				#puts "line fields 2 is:"
+				#puts line.fields[2]
+				#puts "----------------------------"
 				line.fields[2].scan(/\^+(?<name>[A-Za-z0-9\%\#\-\_\?\/]+)\^?(?<dilution>\d+)?/) { |name,dilution|  
 					if transform_expression = lookup_transform(name)
 						self.value = eval(transform_expression)

@@ -4,7 +4,9 @@ module SiemensDimensionExlModule
 
 	def self.included base
     	base.extend ClassMethods
-  	end
+  end
+
+  
 
   	FS = "\x1C"
     ACK_REPLACE = "ACK-"
@@ -13,10 +15,10 @@ module SiemensDimensionExlModule
     ETX_REPLACE = "-ETX"
 
     REPLACEMENT_HASH = {
-      ETX => ETX_REPLACE,
-      STX => STX_REPLACE,
+      "\x03" => ETX_REPLACE,
+      "\x02" => STX_REPLACE,
       FS => FS_REPLACE,
-      ACK => ACK_REPLACE
+      "\x06" => ACK_REPLACE
     }
 
 
