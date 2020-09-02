@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ruby_astm (1.5.9)
+    ruby_astm (1.6.0)
       activesupport (= 5.2.2)
       daemons
       eventmachine
