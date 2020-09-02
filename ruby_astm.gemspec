@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'ruby_astm'
-  s.version     = '1.5.8'
+  s.version     = '1.5.9'
   s.date        = '2018-11-20'
   s.summary     = "A Ruby gem to interface with Medical instruments that work on the ASTM protocol and HL7 protocol. Offers limited bidirectionality for ASTM. Bidirectionality is currently not supported for HL7"
   s.description = "This gem provides a server that can handle communication from medical instruments that send/receive information on the ASTM protocol."
@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
   s.add_dependency "jwt"
   s.add_dependency "rake"
   s.add_dependency "retriable", '~> 3.1'
+  s.add_dependency "daemons"
 
 end
 

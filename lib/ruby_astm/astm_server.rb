@@ -11,7 +11,7 @@ class AstmServer
 
 	def initialize(ethernet_connections,serial_connections,mpg=nil,respond_to_queries=nil,options=nil)
 		$redis = Redis.new
-		self.class.log("Initializing AstmServer")
+		#self.class.log("Initializing AstmServer")
 		self.ethernet_connections = ethernet_connections
 		self.serial_connections = serial_connections
 		self.server_ip = server_ip || "127.0.0.1"
@@ -72,7 +72,7 @@ class AstmServer
 				raise "please provide a valid ethernet configuration with ip address" unless econn[:server_ip]
 				raise "please provide a valid ethernet configuration with port" unless econn[:server_port]
 				EventMachine::start_server econn[:server_ip], econn[:server_port], LabInterface
-				self.class.log("Running ETHERNET  with configuration #{econn}")
+				#self.class.log("Running ETHERNET  with configuration #{econn}")
 			end
 
 		}
