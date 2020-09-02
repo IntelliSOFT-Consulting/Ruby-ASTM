@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'eventmachine'
-require 'em-rubyserial'
+#require 'em-rubyserial'
 require "active_support/all"
 require "json"
 require "redis"
@@ -10,7 +10,8 @@ class AstmServer
 	include LabInterface
 
 	def initialize(ethernet_connections,serial_connections,mpg=nil,respond_to_queries=nil,options=nil)
-		$redis = Redis.new
+		$redis = nil
+		#$redis = Redis.new
 		#self.class.log("Initializing AstmServer")
 		self.ethernet_connections = ethernet_connections
 		self.serial_connections = serial_connections
