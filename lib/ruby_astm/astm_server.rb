@@ -73,6 +73,7 @@ class AstmServer
 				raise "please provide a valid ethernet configuration with ip address" unless econn[:server_ip]
 				raise "please provide a valid ethernet configuration with port" unless econn[:server_port]
 				EventMachine::start_server econn[:server_ip], econn[:server_port], LabInterface
+				puts "running ASTM server on #{econn}"
 				#self.class.log("Running ETHERNET  with configuration #{econn}")
 			end
 

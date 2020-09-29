@@ -27,8 +27,16 @@ module LabInterface
   CSV = "csv"
   OUTPUT_FORMATS = [REDIS,CSV]
   
+  ########################################################
+  ##
+  ##
+  ## TIMERS
+  ##
+  ##
+  ########################################################
+  attr_accessor :prev_command_time
 
-
+  ########################################################
   attr_accessor :ethernet_connections
   attr_accessor :serial_connections
   attr_accessor :ethernet_server
@@ -111,6 +119,7 @@ module LabInterface
         process_text(txt)
       end
     end
+    #sputs self.headers.to_s
   end
 
   def process_byte_file(full_file_path)
@@ -142,6 +151,12 @@ module LabInterface
     "L|1|N\r"
   end
 
+  ## flaggable to add the newlines in case the non-astm COMPLIANCE NEEDS THIS.
+  ## REMEMBER!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  def send_data data
+    #data = data.to_s + "\n"
+    super(data)
+  end
 
   def checksum(input)
     strString = input
@@ -164,11 +179,11 @@ module LabInterface
       final_resp_arr = final_resp.bytes.to_a
       final_resp_arr << 10
       if (self.headers[-1].response_sent == false)
-        puts "sending the  data as follows----------------------------------------------"
-        puts "response sent is:"
-        puts self.headers[-1].response_sent
-        puts final_resp_arr.to_s
-        puts final_resp_arr.pack('c*').gsub(/\r/,'\n')
+        #puts "sending the  data as follows----------------------------------------------"
+        #puts "response sent is:"
+        #puts self.headers[-1].response_sent
+        #puts final_resp_arr.to_s
+        #puts final_resp_arr.pack('c*').gsub(/\r/,'\n')
         send_data(final_resp_arr.pack('c*')) 
         self.headers[-1].response_sent = true if (key == (header_responses.size - 1))
       else
@@ -249,10 +264,13 @@ module LabInterface
   end
 
   def append_to_log(line)
-    puts "self log is #{self.log}, and log output #{self.log_output_directory}"
+    #puts "self log is #{self.log}, and log output #{self.log_output_directory}"
+    
     unless self.log.blank?
-      puts "writing log"
-      File.open((self.log_output_directory + "/log.txt"), "a+") { |f| f.write "#{line} \n" }
+      #puts "writing log"
+      #puts "line is #{line}"
+      #puts line.bytes.to_a
+      File.open((self.log_output_directory + "/log.txt"), "a+") { |f| f.write "#{line.bytes.to_a}" }
     end
   end
 
@@ -260,11 +278,19 @@ module LabInterface
 
 	def receive_data(data)
 
-    #begin
+    begin
+
+      if self.prev_command_time
+        if((self.prev_command_time - Time.now.to_i) > 15)
+          append_to_log("Timeout hit ----------- ")
+        end
+      end
+
+      self.prev_command_time = Time.now.to_i
 
       self.data_buffer ||= ''
 
-      #puts "incoming data bytes."
+      #puts "incoming data bytes. #{data.bytes.to_a}"
 
       concat = ""
       
@@ -286,6 +312,7 @@ module LabInterface
       
       #puts concat.to_s
       #puts "log is--->"
+      
       #puts self.log
       #puts "log output directory -->"
       #puts self.log_output_directory
@@ -316,7 +343,7 @@ module LabInterface
         self.data_buffer = ''
         unless self.headers.blank?
           if self.headers[-1].queries.blank?
-            #puts "no queries in header so sending ack after getting EOT and processing the buffer"
+            puts "no queries in header so sending ack after getting EOT and processing the buffer"
             send_data(ACK)
           else
             #puts "sending ENQ"
@@ -374,17 +401,18 @@ module LabInterface
             send_data(self.headers[-1].generate_ack_success_response)
           end
         else
-          #puts " -------------- HEADERS ARE BLANK NOT HL7, sending ack. ------------ "
+          puts " -------------- HEADERS ARE BLANK NOT HL7, sending ack. ------------ "
           send_data(ACK)
         end
       end
 
-    #rescue => e
+    rescue => e
       
-      #self.headers = []
+      self.headers = []
+      append_to_log("data was: " + self.data_buffer + "error is:" + e.backtrace.to_s)
       #AstmServer.log("data was: " + self.data_buffer + "error is:" + e.backtrace.to_s)
       #send_data(EOT)
-    #end
+    end
 
   end
 
@@ -470,18 +498,15 @@ module LabInterface
       when "Terminator"
         ## it didn't terminate so there was no commit being called.
         unless self.headers.blank?
-          #puts "got terminator."
+         # puts "got terminator - calling commit."
           ## here add the header information , time , etc.
           self.headers[-1].commit(:output_options => self.output_options)
         end
       end
   end
 
-
   def unbind
      puts "-- someone disconnected from the echo server!"
   end
-
-
 
 end

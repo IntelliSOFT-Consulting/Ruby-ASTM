@@ -75,7 +75,20 @@ rake test test/test_ruby_astm.rb
 ## TESTED WITH INSTRUMENTS
 
 1. Sysmex-XN550
+2. Sysmex-XP-100/300
 
+## INSTALLATION INSTRUCTIONS
+
+To run the server navigate to the file under "/test/runner.rb".
+From the command line run:
+
+```
+ruby runner.rb
+```
+
+This will fire up an ASTM server, with the specified IP, and port.
+
+Follow the rest of the instructions as outlined in the "Instructions.pdf" file in the root directory of the project.
 
 
 ## Development Notes:

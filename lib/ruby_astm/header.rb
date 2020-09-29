@@ -22,6 +22,7 @@ class Header
 		self.patients = []
 		self.queries = []
 		self.response_sent = false
+		self.machine_name = ""
 		if line = args[:line]
 			set_machine_name(args)
 			set_protocol(args)
@@ -37,9 +38,10 @@ class Header
 		end
 	end
 
-	
+	## while committing to csv, it will use the following format
+	## machine_name + "_" + current_time + "_" + patient_id.csv	
 	def commit(args)
-		#puts "args are:"
+		#puts "COMMITTING HEADERS -----------> #{args}:"
 		#puts args.to_s
 		if args[:output_options]["format"] == LabInterface::REDIS
 		
@@ -52,7 +54,7 @@ class Header
 			if args[:output_options]["records_per_file"] ==  "single"
 
 				self.patients.each do |patient|
-					csv_file_name = Time.now.strftime('%d %B %Y %I:%M:%S %P').to_s + "#{patient.patient_id}.csv"
+					csv_file_name = self.machine_name + "_" + Time.now.strftime('%d %B %Y %I:%M:%S %P').to_s + "#{patient.patient_id}.csv"
 					csv_file_path = args[:output_options]["output_directory"] + "/" + csv_file_name
 					
 					patient_csv_data = patient.to_csv
@@ -70,7 +72,7 @@ class Header
 			end 
 
 		else
-			#puts "no known output format has been provided! PLEASE PROVIDE AN OUTPUT FORMAT"
+			puts "no known output format has been provided! PLEASE PROVIDE AN OUTPUT FORMAT"
 		end
 
 		#puts JSON.pretty_generate(JSON.parse(self.to_json))

@@ -1,4 +1,6 @@
-# server_control.rb
+# to run this file
+# do 
+# bundle exec ruby dameon.rb
 require 'daemons'
 
 Daemons.run('runner.rb')

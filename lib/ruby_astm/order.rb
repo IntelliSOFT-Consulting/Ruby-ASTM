@@ -34,6 +34,7 @@ class Order
 	## index (11)
 	attr_accessor :action_code
 
+	## regex seems to be a bit different here.
 	def set_id(args)
 		if line = args[:line]
 			if !line.fields[2].blank?
@@ -42,7 +43,7 @@ class Order
 				}
 			elsif !line.fields[3].blank?
 				## for the sysmex xn-550 this is the regex.
-				line.fields[3].strip.scan(/(?<tube_rack>\d+\^)+(?<patient_id>.+)\^/) { |tube_rack,patient_id|  self.id = patient_id.strip} 
+				line.fields[3].strip.scan(/(?<tube_rack>(\d+)?\^)+(?<patient_id>.+)\^/) { |tube_rack,patient_id|  self.id = patient_id.strip} 
 			end
 		else
 			self.id = args[:specimen_id]
