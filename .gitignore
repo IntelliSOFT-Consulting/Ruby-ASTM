@@ -1,1 +1,5 @@
 output_files/*
+agreement/
+agreement/*
+documentation/
+documentation/*
